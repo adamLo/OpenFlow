@@ -92,6 +92,7 @@ const static CGFloat kReflectionFraction = 0.85;
 	return coverView;
 }
 
+
 - (void)updateCoverImage:(AFItemView *)aCover {
 	NSNumber *coverNumber = [NSNumber numberWithInt:aCover.number];
 	UIImage *coverImage = (UIImage *)[coverImages objectForKey:coverNumber];
@@ -301,8 +302,13 @@ const static CGFloat kReflectionFraction = 0.85;
 		CGPoint targetPoint = [[touches anyObject] locationInView:self];
 		CALayer *targetLayer = (CALayer *)[scrollView.layer hitTest:targetPoint];
 		AFItemView *targetCover = [self findCoverOnscreen:targetLayer];
-		if (targetCover && (targetCover.number != selectedCoverView.number))
-			[self setSelectedCover:targetCover.number];
+		if (targetCover) {
+            if (targetCover.number != selectedCoverView.number)
+                [self setSelectedCover:targetCover.number];
+            else
+                if ([self.viewDelegate respondsToSelector:@selector(openFlowView:touchedItemAtIndex:)])
+                    [self.viewDelegate openFlowView:self touchedItemAtIndex:selectedCoverView.number];
+        }
 	}
 	[self centerOnSelectedCover:YES];
 	
@@ -439,5 +445,6 @@ const static CGFloat kReflectionFraction = 0.85;
 	
 	selectedCoverView = (AFItemView *)[onscreenCovers objectForKey:[NSNumber numberWithInt:newSelectedCover]];
 }
+
 
 @end
