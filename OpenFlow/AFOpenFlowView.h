@@ -57,12 +57,15 @@
 	Boolean isDoubleTap;
 	Boolean isDraggingACover;
 	CGFloat startPosition;
+    
+    CGFloat reflectionFactor;
 }
 
 @property (nonatomic, assign) id <AFOpenFlowViewDataSource> dataSource;
 @property (nonatomic, assign) id <AFOpenFlowViewDelegate> viewDelegate;
 @property (nonatomic, retain) UIImage *defaultImage;
-@property int numberOfImages;
+@property (nonatomic) int numberOfImages;
+@property (atomic) CGFloat reflectionFactor;
 
 - (void)setSelectedCover:(int)newSelectedCover;
 - (void)centerOnSelectedCover:(BOOL)animated;

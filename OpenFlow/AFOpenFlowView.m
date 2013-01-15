@@ -41,7 +41,8 @@
 
 @implementation AFOpenFlowView (hidden)
 
-const static CGFloat kReflectionFraction = 0.85;
+
+//const static CGFloat kReflectionFraction = 0.85;
 
 - (void)setUpInitialState {
 	// Set up the default image for the coverflow.
@@ -99,9 +100,9 @@ const static CGFloat kReflectionFraction = 0.85;
 	if (coverImage) {
 		NSNumber *coverImageHeightNumber = (NSNumber *)[coverImageHeights objectForKey:coverNumber];
 		if (coverImageHeightNumber)
-			[aCover setImage:coverImage originalImageHeight:[coverImageHeightNumber floatValue] reflectionFraction:kReflectionFraction];
+			[aCover setImage:coverImage originalImageHeight:[coverImageHeightNumber floatValue] reflectionFraction:/*kReflectionFraction*/reflectionFactor];
 	} else {
-		[aCover setImage:defaultImage originalImageHeight:defaultImageHeight reflectionFraction:kReflectionFraction];
+		[aCover setImage:defaultImage originalImageHeight:defaultImageHeight reflectionFraction:reflectionFactor /*kReflectionFraction*/];
 		[self.dataSource openFlowView:self requestImageForIndex:aCover.number];
 	}
 }
@@ -175,6 +176,7 @@ const static CGFloat kReflectionFraction = 0.85;
 
 @implementation AFOpenFlowView
 @synthesize dataSource, viewDelegate, numberOfImages, defaultImage;
+@synthesize reflectionFactor;
 
 #define COVER_BUFFER 6
 
@@ -221,6 +223,16 @@ const static CGFloat kReflectionFraction = 0.85;
 - (void)setNumberOfImages:(int)newNumberOfImages {
 	numberOfImages = newNumberOfImages;
 	scrollView.contentSize = CGSizeMake(newNumberOfImages * COVER_SPACING + self.bounds.size.width, self.bounds.size.height);
+    
+    if (newNumberOfImages==0) {
+        [offscreenCovers removeAllObjects];
+        [onscreenCovers removeAllObjects];
+        [coverImages removeAllObjects];
+        [coverImageHeights removeAllObjects];
+        for (int i=0;i<[scrollView.subviews count];i++)
+            [[scrollView.subviews objectAtIndex:i] removeFromSuperview];
+        selectedCoverView=nil;
+    }
 
 	int lowerBound = MAX(0, selectedCoverView.number - COVER_BUFFER);
 	int upperBound = MIN(self.numberOfImages - 1, selectedCoverView.number + COVER_BUFFER);
@@ -236,12 +248,12 @@ const static CGFloat kReflectionFraction = 0.85;
 - (void)setDefaultImage:(UIImage *)newDefaultImage {
 	[defaultImage release];
 	defaultImageHeight = newDefaultImage.size.height;
-	defaultImage = [[newDefaultImage addImageReflection:kReflectionFraction] retain];
+	defaultImage = [[newDefaultImage addImageReflection:reflectionFactor/* kReflectionFraction*/] retain];
 }
 
 - (void)setImage:(UIImage *)image forIndex:(int)index {
 	// Create a reflection for this image.
-	UIImage *imageWithReflection = [image addImageReflection:kReflectionFraction];
+	UIImage *imageWithReflection = [image addImageReflection:reflectionFactor/* kReflectionFraction*/];
 	NSNumber *coverNumber = [NSNumber numberWithInt:index];
 	[coverImages setObject:imageWithReflection forKey:coverNumber];
 	[coverImageHeights setObject:[NSNumber numberWithFloat:image.size.height] forKey:coverNumber];
@@ -249,7 +261,7 @@ const static CGFloat kReflectionFraction = 0.85;
 	// If this cover is onscreen, set its image and call layoutCover.
 	AFItemView *aCover = (AFItemView *)[onscreenCovers objectForKey:[NSNumber numberWithInt:index]];
 	if (aCover) {
-		[aCover setImage:imageWithReflection originalImageHeight:image.size.height reflectionFraction:kReflectionFraction];
+		[aCover setImage:imageWithReflection originalImageHeight:image.size.height reflectionFraction:reflectionFactor/* kReflectionFraction*/];
 		[self layoutCover:aCover selectedCover:selectedCoverView.number animated:NO];
 	}
 }
