@@ -28,7 +28,8 @@
 
 
 @implementation AFItemView
-@synthesize number, imageView, horizontalPosition, verticalPosition;
+@synthesize number=_number;
+@synthesize imageView, horizontalPosition, verticalPosition;
 
 - (id)initWithFrame:(CGRect)frame {
 	if (self = [super initWithFrame:frame]) {
@@ -55,7 +56,11 @@
 
 - (void)setNumber:(int)newNumber {
 	horizontalPosition = COVER_SPACING * newNumber;
-	number = newNumber;
+	_number = newNumber;
+}
+
+- (int)number {
+    return _number;
 }
 
 - (CGSize)calculateNewSize:(CGSize)baseImageSize boundingBox:(CGSize)boundingBox {

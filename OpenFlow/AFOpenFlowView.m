@@ -137,6 +137,8 @@
 	
 	if (animated) {
 		[UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.4]; //Increase this for smoother animation
+        [UIView setAnimationDelay:0.05];
 		[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
 		[UIView setAnimationBeginsFromCurrentState:YES];
 	}

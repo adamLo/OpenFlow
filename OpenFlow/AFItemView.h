@@ -33,7 +33,7 @@
 	CGFloat			originalImageHeight;
 }
 
-@property int number;
+@property (atomic) int number;
 @property (nonatomic, readonly) CGFloat horizontalPosition;
 @property (nonatomic, readonly) CGFloat verticalPosition;
 @property (nonatomic, readonly) UIImageView *imageView;
